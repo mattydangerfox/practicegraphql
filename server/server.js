@@ -1,11 +1,21 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import {
+  graphqlExpress,
+  graphiqlExpress
+} from 'graphql-server-express';
+import { schema } from './src/schema';
 
-const app = express();
+const PORT = 4000;
+const server = express();
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-})
+server.use('/graphql', bodyParser.json(), graphqlExpress({
+  schema
+}));
+server.use('/graphiql', graphiqlExpress({
+  endpointURL: '/graphql'
+}))
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
-})
+server.listen(PORT, () => {
+  console.log(`GraphQL server is running on ${PORT}!`);
+});
